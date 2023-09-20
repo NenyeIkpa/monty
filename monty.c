@@ -1,5 +1,7 @@
 #include "monty.h"
 
+#define SIZE 1024
+
 /**
  * run_command - processes and runs commands
  *
@@ -45,8 +47,6 @@ void run_command(stack_t **top, char *args[2], int line_count)
 		exit(EXIT_FAILURE);
 	}
 }
-
-#define SIZE 60
 
 /**
  * split_command - splits given command into strings
