@@ -1,6 +1,24 @@
 #include "monty.h"
 
 /**
+ * free_stack - frees existing stack
+ *
+ * @s: pointer to top of stack pointer
+ */
+
+void free_stack(stack_t **s)
+{
+	stack_t *temp = NULL;
+
+	while (*s != NULL)
+	{
+		temp = *s;
+		*s = (*s)->next;
+		free(temp);
+	}
+}
+
+/**
  * push - pushes an element onto the stack
  *
  * @s: pointer to stack head

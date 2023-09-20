@@ -5,12 +5,13 @@
 /**
  * run_command - processes and runs commands
  *
+ * @fp: pointer to file
  * @top: pointer to top of stack
  * @args: commands to be run
  * @line_count: line number of command in file
  */
 
-void run_command(stack_t **top, char *args[2], int line_count)
+void run_command(FILE **fp, stack_t **top, char *args[2], int line_count)
 {
 	char *opcode;
 	int i, found, element;
@@ -34,6 +35,8 @@ void run_command(stack_t **top, char *args[2], int line_count)
 				if (args[1] == NULL)
 				{
 					no_arg_to_cmd_error(line_count);
+					fclose(*fp);
+					free_stack(top);
 					exit(EXIT_FAILURE);
 				}
 				element = atoi(args[1]);
@@ -44,6 +47,8 @@ void run_command(stack_t **top, char *args[2], int line_count)
 	if (!found)
 	{
 		cmd_does_not_exist_error(line_count, opcode);
+		free_stack(top);
+		fclose(*fp);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -134,9 +139,10 @@ int main(int argc, char **argv)
 		/* fputs(command, stdout); */
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
-		run_command(&top, args, line_count);
+		run_command(&file_ptr, &top, args, line_count);
 	}
 
 	fclose(file_ptr);
+	free_stack(&top);
 	return (0);
 }
