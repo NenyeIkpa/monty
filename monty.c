@@ -1,5 +1,51 @@
 #include "monty.h"
 
+/**
+ * run_command - processes and runs commands
+ *
+ * @top: pointer to top of stack
+ * @args: commands to be run
+ * @line_count: line number of command in file
+ */
+
+void run_command(stack_t **top, char *args[2], int line_count)
+{
+	char *opcode;
+	int i, found, element;
+	instruction_t operations[] = {
+		{"push", push},
+		{"pall", pall},
+		{NULL, NULL}
+	};
+
+	opcode = args[0];
+	found = 0;
+	for (i = 0; operations[i].opcode; i++)
+	{
+		if (strcmp(opcode, operations[i].opcode) == 0)
+		{
+			found = 1;
+			if (strcmp(opcode, "pall") == 0)
+				element = 0;
+			else
+			{
+				if (args[1] == NULL)
+				{
+					no_arg_to_cmd_error(line_count);
+					exit(EXIT_FAILURE);
+				}
+				element = atoi(args[1]);
+			}
+			operations[i].f(top, element);
+		}
+	}
+	if (!found)
+	{
+		cmd_does_not_exist_error(line_count, opcode);
+		exit(EXIT_FAILURE);
+	}
+}
+
 #define SIZE 60
 
 /**
@@ -63,13 +109,8 @@ int main(int argc, char **argv)
 {
 	FILE *file_ptr;
 	char *args[2];
-	char *filename = NULL, buffer[SIZE], *opcode = NULL, *command = NULL;
-	int line_count = 0, i, element, found;
-	instruction_t operations[] = {
-		{"push", push},
-		{"pall", pall},
-		{NULL, NULL}
-	};
+	char *filename = NULL, buffer[SIZE], *command = NULL;
+	int line_count = 0;
 	stack_t *top = NULL;
 
 	if (argc < 2)
@@ -93,32 +134,7 @@ int main(int argc, char **argv)
 		/* fputs(command, stdout); */
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
-		opcode = args[0];
-		found = 0;
-		for (i = 0; operations[i].opcode; i++)
-		{
-			if (strcmp(opcode, operations[i].opcode) == 0)
-			{
-				found = 1;
-				if (strcmp(opcode, "pall") == 0)
-					element = 0;
-				else
-				{
-					if (args[1] == NULL)
-					{
-						no_arg_to_cmd_error(line_count);
-						exit(EXIT_FAILURE);
-					}
-					element = atoi(args[1]);
-				}
-				operations[i].f(&top, element);
-			}
-		}
-		if (!found)
-		{
-			cmd_does_not_exist_error(line_count, opcode);
-			exit(EXIT_FAILURE);
-		}
+		run_command(&top, args, line_count);
 	}
 
 	fclose(file_ptr);

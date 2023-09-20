@@ -30,6 +30,13 @@ void push(stack_t **s, unsigned int n)
 	}
 }
 
+/**
+ * pall - prints out the contents pf stack_t
+ *
+ * @s: pointer to top of stack pointer
+ * @n: 0
+ */
+
 void pall(stack_t **s, unsigned int n)
 {
 	stack_t *looper;
