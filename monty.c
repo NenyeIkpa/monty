@@ -2,6 +2,25 @@
 
 #define SIZE 60
 
+void p_cerror(char c)
+{
+	write(2, &c, sizeof(char));
+}
+
+/**
+ * p_serror - prints to standard error
+ *
+ * @text: text to be printed
+ */
+
+void p_serror(char *text)
+{
+	int i;
+
+	for (i = 0; text[i]; i++)
+		p_cerror(text[i]);
+}
+
 /**
  * split_command - splits given command into strings
  *
@@ -40,7 +59,7 @@ char *remove_white_spaces(char *str)
 
 	for (i = 0; (size_t)i < strlen(str); i++)
 	{
-		if (str[i] != ' ' || (i > 0  && str[i-1] != ' '))
+		if (str[i] != ' ' || (i > 0  && str[i - 1] != ' '))
 		{
 			str[j] = str[i];
 			j++;
@@ -48,7 +67,7 @@ char *remove_white_spaces(char *str)
 	}
 	str[j] = '\0';
 	return (str);
-}	
+}
 
 /**
  * main - entry point to interpreter for monty bytecode files
@@ -74,7 +93,7 @@ int main(int argc, char **argv)
 
 	if (argc < 2)
 	{
-		printf("USAGE: monty file\n");
+		p_serror("USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -82,15 +101,17 @@ int main(int argc, char **argv)
 	file_ptr = fopen(filename, "r");
 	if (file_ptr == NULL)
 	{
-		printf("Error: Can't open file %s\n", filename);
+		p_serror("Error: Can't open file ");
+		p_serror(filename);
+		p_serror("\n");
 		exit(EXIT_FAILURE);
 	}
 	while (fgets(buffer, SIZE, file_ptr) != NULL)
 	{
-		fputs(buffer, stdout);
+		/* fputs(buffer, stdout); */
 		command = remove_white_spaces(buffer);
 		line_count++;
-		fputs(command, stdout);
+		/* fputs(command, stdout); */
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
 		opcode = args[0];
@@ -100,16 +121,29 @@ int main(int argc, char **argv)
 			if (strcmp(opcode, operations[i].opcode) == 0)
 			{
 				found = 1;
-				if (strcmp(opcode,"pall") == 0)
+				if (strcmp(opcode, "pall") == 0)
 					element = 0;
 				else
+				{
+					if (args[1] == NULL)
+					{
+						p_serror("L");
+						p_cerror('0' + line_count);
+						p_serror(": usage: push integer\n");
+						exit(EXIT_FAILURE);
+					}
 					element = atoi(args[1]);
+				}
 				operations[i].f(&top, element);
 			}
 		}
 		if (!found)
 		{
-			printf("L%d: unknown instruction %s\n", line_count, opcode);
+			p_serror("L");
+			p_cerror('0' + line_count);
+			p_serror(": unknown instruction ");
+			p_serror(opcode);
+			p_serror("\n");
 			exit(EXIT_FAILURE);
 		}
 	}

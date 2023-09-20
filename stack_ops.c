@@ -9,14 +9,38 @@
 
 void push(stack_t **s, unsigned int n)
 {
-	(void)s;
-	(void) n;
-	printf("Pushed!!!\n");
+	stack_t *node;
+
+	node = malloc(sizeof(stack_t));
+	if (node == NULL)
+	{
+		printf("Error: malloc failed\n");
+		exit(EXIT_FAILURE);
+	}
+	node->n = (int)n;
+	node->prev = NULL;
+	node->next = NULL;
+	if (*s == NULL)
+		*s = node;
+	else
+	{
+		node->next = *s;
+		(*s)->prev = node;
+		*s = node;
+	}
 }
 
 void pall(stack_t **s, unsigned int n)
 {
-	(void)s;
+	stack_t *looper;
 	(void)n;
-	printf("Palled!!!\n");
+
+	if (*s == NULL)
+		return;
+	looper = *s;
+	while (looper != NULL)
+	{
+		printf("%d\n", looper->n);
+		looper = looper->next;
+	}
 }
