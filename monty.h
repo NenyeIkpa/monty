@@ -38,5 +38,10 @@ typedef struct instruction_s
 
 void push(stack_t **stack, unsigned int line_number);
 void pall(stack_t **stack, unsigned int line_number);
+void p_cerror(char);
+void p_serror(char *);
+void file_open_error(char *);
+void no_arg_to_cmd_error(int);
+void cmd_does_not_exist_error(int, char *);
 
 #endif

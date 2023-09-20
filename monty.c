@@ -2,25 +2,6 @@
 
 #define SIZE 60
 
-void p_cerror(char c)
-{
-	write(2, &c, sizeof(char));
-}
-
-/**
- * p_serror - prints to standard error
- *
- * @text: text to be printed
- */
-
-void p_serror(char *text)
-{
-	int i;
-
-	for (i = 0; text[i]; i++)
-		p_cerror(text[i]);
-}
-
 /**
  * split_command - splits given command into strings
  *
@@ -101,9 +82,7 @@ int main(int argc, char **argv)
 	file_ptr = fopen(filename, "r");
 	if (file_ptr == NULL)
 	{
-		p_serror("Error: Can't open file ");
-		p_serror(filename);
-		p_serror("\n");
+		file_open_error(filename);
 		exit(EXIT_FAILURE);
 	}
 	while (fgets(buffer, SIZE, file_ptr) != NULL)
@@ -127,9 +106,7 @@ int main(int argc, char **argv)
 				{
 					if (args[1] == NULL)
 					{
-						p_serror("L");
-						p_cerror('0' + line_count);
-						p_serror(": usage: push integer\n");
+						no_arg_to_cmd_error(line_count);
 						exit(EXIT_FAILURE);
 					}
 					element = atoi(args[1]);
@@ -139,11 +116,7 @@ int main(int argc, char **argv)
 		}
 		if (!found)
 		{
-			p_serror("L");
-			p_cerror('0' + line_count);
-			p_serror(": unknown instruction ");
-			p_serror(opcode);
-			p_serror("\n");
+			cmd_does_not_exist_error(line_count, opcode);
 			exit(EXIT_FAILURE);
 		}
 	}
