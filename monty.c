@@ -1,6 +1,7 @@
 #include "monty.h"
 
 #define SIZE 1024
+int is_a_number(char *arg);
 
 /**
  * run_command - processes and runs commands
@@ -8,36 +9,37 @@
  * @fp: pointer to file
  * @top: pointer to top of stack
  * @args: commands to be run
+ * @line_number: line number of command
  */
 
-void run_command(FILE **fp, stack_t **top, char *args[2])
+void run_command(FILE **fp, stack_t **top, char *args[2], int line_number)
 {
 	char *opcode = args[0];
-	int i, found = 0, element, line_number = -1;
+	int i, found = 0, element;
 	instruction_t operations[] = {
 		{"push", push}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {NULL, NULL}
 	};
 
 	for (i = 0; operations[i].opcode; i++)
 	{
+
 		if (strcmp(opcode, operations[i].opcode) == 0)
 		{
 			found = 1;
-			if (strcmp(opcode, "pall") == 0 || strcmp(opcode, "pint") == 0 || strcmp(opcode, "pop") == 0)
-				element = line_number;
-			else
+			if (strcmp(opcode, operations[0].opcode) == 0)
 			{
-				line_number++;
-				if (args[1] == NULL)
+				if (args[1] == NULL || !is_a_number(args[1]))
 				{
 					no_arg_to_cmd_error(line_number);
 					fclose(*fp);
 					free_stack(top);
 					exit(EXIT_FAILURE);
 				}
-				element = atoi(args[1]);
+				  element = atoi(args[1]);
 			}
-			operations[i].f(top, element);
+			else
+				element = line_number;
+		operations[i].f(top, element);
 		}
 	}
 	if (!found)
@@ -47,6 +49,28 @@ void run_command(FILE **fp, stack_t **top, char *args[2])
 		fclose(*fp);
 		exit(EXIT_FAILURE);
 	}
+}
+
+/**
+ * is_a_number - checks if arg passed is an int
+ *
+ * @arg: arg passed
+ *
+ * Return: 1 when true else 0
+ */
+
+int is_a_number(char *arg)
+{
+	int i;
+
+	for (i = 0; arg[i]; i++)
+	{
+		if (arg[i] >= '0' && arg[i] <= '9')
+			continue;
+		else
+			return (0);
+	}
+	return (1);
 }
 
 /**
@@ -112,6 +136,7 @@ int main(int argc, char **argv)
 	char *args[2] = {NULL, NULL};
 	char *filename = NULL, buffer[SIZE], *command = NULL;
 	stack_t *top = NULL;
+	int line_number = 0;
 
 	if (argc < 2)
 	{
@@ -131,10 +156,11 @@ int main(int argc, char **argv)
 		command = remove_white_spaces(buffer);
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
+		line_number++;
 		if (args[0] == NULL)
 			continue;
 		else
-			run_command(&file_ptr, &top, args);
+			run_command(&file_ptr, &top, args, line_number);
 	}
 
 	fclose(file_ptr);
