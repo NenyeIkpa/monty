@@ -18,6 +18,7 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_count)
 	instruction_t operations[] = {
 		{"push", push},
 		{"pall", pall},
+		{"pint", pint},
 		{NULL, NULL}
 	};
 
@@ -28,8 +29,8 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_count)
 		if (strcmp(opcode, operations[i].opcode) == 0)
 		{
 			found = 1;
-			if (strcmp(opcode, "pall") == 0)
-				element = 0;
+			if (strcmp(opcode, "pall") == 0 || strcmp(opcode, "pint") == 0)
+				element = line_count;
 			else
 			{
 				if (args[1] == NULL)
@@ -123,7 +124,7 @@ int main(int argc, char **argv)
 	FILE *file_ptr;
 	char *args[2];
 	char *filename = NULL, buffer[SIZE], *command = NULL;
-	int line_count = 0;
+	int line_number = 0;
 	stack_t *top = NULL;
 
 	if (argc < 2)
@@ -143,11 +144,11 @@ int main(int argc, char **argv)
 	{
 		/* fputs(buffer, stdout); */
 		command = remove_white_spaces(buffer);
-		line_count++;
+		line_number++;
 		/* fputs(command, stdout); */
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
-		run_command(&file_ptr, &top, args, line_count);
+		run_command(&file_ptr, &top, args, line_number);
 	}
 
 	fclose(file_ptr);

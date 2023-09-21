@@ -69,3 +69,23 @@ void pall(stack_t **s, unsigned int n)
 		looper = looper->next;
 	}
 }
+
+/**
+ * pint - prints the value at the top of the stack
+ *
+ * @s: pointer to top of the stack pointer
+ * @n: line number
+ */
+
+void pint (stack_t **s, unsigned int n)
+{
+	(void)n;
+	if (*s == NULL)
+	{
+		empty_stack_error(n);
+		exit(EXIT_FAILURE);
+	}
+	printf("%d\n", (*s)->n);
+}
+
+
