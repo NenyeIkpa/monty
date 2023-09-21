@@ -109,7 +109,7 @@ char *remove_white_spaces(char *str)
 int main(int argc, char **argv)
 {
 	FILE *file_ptr;
-	char *args[2];
+	char *args[2] = {NULL, NULL};
 	char *filename = NULL, buffer[SIZE], *command = NULL;
 	stack_t *top = NULL;
 
@@ -128,12 +128,13 @@ int main(int argc, char **argv)
 	}
 	while (fgets(buffer, SIZE, file_ptr) != NULL)
 	{
-		/* fputs(buffer, stdout); */
 		command = remove_white_spaces(buffer);
-		/* fputs(command, stdout); */
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
-		run_command(&file_ptr, &top, args);
+		if (args[0] == NULL)
+			continue;
+		else
+			run_command(&file_ptr, &top, args);
 	}
 
 	fclose(file_ptr);
