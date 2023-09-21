@@ -98,17 +98,26 @@ void pint (stack_t **s, unsigned int n)
 
 void pop(stack_t **s, unsigned int n)
 {
-	stack_t *temp;
+	stack_t *temp = NULL;
 
 	if (*s == NULL)
 	{
 		empty_stack_error("pop", n);
 		exit(EXIT_FAILURE);
 	}
-	temp = *s;
-	*s = (*s)->next;
-	(*s)->prev = NULL;
-	free(temp);
+	if ((*s)->next == NULL)
+	{
+		free(*s);
+		*s = temp;
+
+	}
+	else
+	{
+		temp = *s;
+		*s = (*s)->next;
+		(*s)->prev = NULL;
+		free(temp);
+	}
 }
 
 
