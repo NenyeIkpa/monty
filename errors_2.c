@@ -30,6 +30,11 @@ void empty_stack_error(char *op_type, int line_number)
 		msg = "can't mul, stack too short";
 	else if (strcmp(op_type, "mod") == 0)
 		msg = "can't mod, stack too short";
+	else if (strcmp(op_type, "pchar") == 0)
+		msg = "can't pchar, stack empty";
+	else if (strcmp(op_type, "out of range") == 0)
+		msg = "can't pchar, value out of range";
+
 	p_cerror('L');
 	p_cerror('0' + line_number);
 	p_serror(": ");
