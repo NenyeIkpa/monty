@@ -3,6 +3,27 @@
 #define SIZE 1024
 
 /**
+ * is_a_number - checks if string is a number
+ *
+ * @str: given string
+ *
+ * Return: 1 when true, 0 if false
+ */
+
+int is_a_number(char *str)
+{
+	int i;
+
+	for (i = 0; str[i]; i++)
+	{
+		if (str[i] >= '0' && str[i] <= '9')
+			continue;
+		return (0);
+	}
+	return (1);
+}
+
+/**
  * run_command - processes and runs commands
  *
  * @fp: pointer to file
@@ -32,7 +53,7 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_count)
 				element = 0;
 			else
 			{
-				if (args[1] == NULL)
+				if (args[1] == NULL || !is_a_number(args[1]))
 				{
 					no_arg_to_cmd_error(line_count);
 					fclose(*fp);
@@ -63,18 +84,17 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_count)
 void split_command(char *args[2], char *command)
 {
 	char *token = NULL;
-	int space_count = 0;
+	int token_count = 0;
 
 	token = strtok(command, " ");
 	args[0] = token;
-	space_count++;
-	while (token != NULL)
+	token_count = 1;
+
+	while (token != NULL || token_count < 2)
 	{
-		if (space_count == 2)
-			break;
 		token = strtok(NULL, " ");
 		args[1] = token;
-		space_count++;
+		token_count++;
 	}
 }
 /**
@@ -133,10 +153,8 @@ int main(int argc, char **argv)
 	}
 	while (fgets(buffer, SIZE, file_ptr) != NULL)
 	{
-		/* fputs(buffer, stdout); */
 		command = remove_white_spaces(buffer);
 		line_count++;
-		/* fputs(command, stdout); */
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
 		run_command(&file_ptr, &top, args, line_count);
