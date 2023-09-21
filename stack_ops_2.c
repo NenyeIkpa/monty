@@ -57,3 +57,37 @@ void add(stack_t **s, unsigned int n)
 	(*s)->n = outcome;
 }
 
+/**
+ * sub - subtracts the top element from the second on stack
+ *
+ * @s: pointer to top of stack pointer
+ * @n: line number
+ */
+
+void sub(stack_t **s, unsigned int n)
+{
+	stack_t *looper;
+	int outcome = 0, max = 0, next_to_max = 0;
+
+	if (*s == NULL || (*s)->next == NULL)
+	{
+		empty_stack_error("add", n);
+		exit(EXIT_FAILURE);
+	}
+	looper = *s;
+	max = looper->n;
+	while (looper != NULL)
+	{
+		if (looper->n > max)
+		{
+			next_to_max = max;
+			max = looper->n;
+		}
+		if (looper->n < max && looper->n > next_to_max)
+			next_to_max = looper->n;
+		looper = looper->next;
+	}
+	outcome = max - next_to_max;
+	pop(s, n);
+	(*s)->n = outcome;
+}
