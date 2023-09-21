@@ -6,4 +6,4 @@ Implement the pint opcode:- prints value at the top of the stack, followed by a 
 Implement the pop opcode:- removes the top element of the stack
 Implement the swap opcode:- swaps the top two elements of the stack
 Implement the add opcode:- adds the top two elements of the stack
-Implement the nop opcode
+Implement the nop opcode:- doesn't do anything
