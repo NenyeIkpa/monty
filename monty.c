@@ -8,34 +8,29 @@
  * @fp: pointer to file
  * @top: pointer to top of stack
  * @args: commands to be run
- * @line_count: line number of command in file
  */
 
-void run_command(FILE **fp, stack_t **top, char *args[2], int line_count)
+void run_command(FILE **fp, stack_t **top, char *args[2])
 {
-	char *opcode;
-	int i, found, element;
+	char *opcode = args[0];
+	int i, found = 0, element, line_number = -1;
 	instruction_t operations[] = {
-		{"push", push},
-		{"pall", pall},
-		{"pint", pint},
-		{NULL, NULL}
+		{"push", push}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {NULL, NULL}
 	};
 
-	opcode = args[0];
-	found = 0;
 	for (i = 0; operations[i].opcode; i++)
 	{
 		if (strcmp(opcode, operations[i].opcode) == 0)
 		{
 			found = 1;
-			if (strcmp(opcode, "pall") == 0 || strcmp(opcode, "pint") == 0)
-				element = line_count;
+			if (strcmp(opcode, "pall") == 0 || strcmp(opcode, "pint") == 0 || strcmp(opcode, "pop") == 0)
+				element = line_number;
 			else
 			{
+				line_number++;
 				if (args[1] == NULL)
 				{
-					no_arg_to_cmd_error(line_count);
+					no_arg_to_cmd_error(line_number);
 					fclose(*fp);
 					free_stack(top);
 					exit(EXIT_FAILURE);
@@ -47,7 +42,7 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_count)
 	}
 	if (!found)
 	{
-		cmd_does_not_exist_error(line_count, opcode);
+		cmd_does_not_exist_error(line_number, opcode);
 		free_stack(top);
 		fclose(*fp);
 		exit(EXIT_FAILURE);
@@ -116,7 +111,6 @@ int main(int argc, char **argv)
 	FILE *file_ptr;
 	char *args[2];
 	char *filename = NULL, buffer[SIZE], *command = NULL;
-	int line_number = 0;
 	stack_t *top = NULL;
 
 	if (argc < 2)
@@ -136,11 +130,10 @@ int main(int argc, char **argv)
 	{
 		/* fputs(buffer, stdout); */
 		command = remove_white_spaces(buffer);
-		line_number++;
 		/* fputs(command, stdout); */
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
-		run_command(&file_ptr, &top, args, line_number);
+		run_command(&file_ptr, &top, args);
 	}
 
 	fclose(file_ptr);
