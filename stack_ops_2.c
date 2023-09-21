@@ -96,12 +96,10 @@ void _div(stack_t **s, unsigned int n)
 
 	if ((*s)->n == 0)
 		empty_stack_error("zero", n);
-	else
-	{
-		outcome = (*s)->next->n / (*s)->n;
-		pop(s, n);
-		(*s)->n = outcome;
-	}
+
+	outcome = (*s)->next->n / (*s)->n;
+	pop(s, n);
+	(*s)->n = outcome;
 }
 
 /**
