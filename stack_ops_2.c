@@ -12,16 +12,10 @@ void swap(stack_t **s, unsigned int n)
 	stack_t *temp;
 
 	if (*s == NULL || (*s)->next == NULL)
-	{
 		empty_stack_error("swap", n);
-		exit(EXIT_FAILURE);
-	}
 	temp = malloc(sizeof(stack_t));
 	if (temp == NULL)
-	{
 		malloc_error();
-		exit(EXIT_FAILURE);
-	}
 
 	temp->n = (*s)->next->n;
 	temp->next = (*s)->next->next;
@@ -37,7 +31,7 @@ void swap(stack_t **s, unsigned int n)
 }
 
 /**
- * add - adds the top two eleents in stack
+ * add - adds the top two elements in stack
  *
  * @s: pointer to head pointer
  * @n: line number
@@ -48,10 +42,7 @@ void add(stack_t **s, unsigned int n)
 	int outcome = 0;
 
 	if (*s == NULL || (*s)->next == NULL)
-	{
 		empty_stack_error("add", n);
-		exit(EXIT_FAILURE);
-	}
 	outcome = (*s)->n + (*s)->next->n;
 	pop(s, n);
 	(*s)->n = outcome;
@@ -70,10 +61,7 @@ void sub(stack_t **s, unsigned int n)
 	int outcome = 0, max = 0, next_to_max = 0;
 
 	if (*s == NULL || (*s)->next == NULL)
-	{
-		empty_stack_error("add", n);
-		exit(EXIT_FAILURE);
-	}
+		empty_stack_error("sub", n);
 	looper = *s;
 	max = looper->n;
 	while (looper != NULL)
@@ -88,6 +76,49 @@ void sub(stack_t **s, unsigned int n)
 		looper = looper->next;
 	}
 	outcome = max - next_to_max;
+	pop(s, n);
+	(*s)->n = outcome;
+}
+
+/**
+ * _div - dividess the second by top element in stack
+ *
+ * @s: pointer to head pointer
+ * @n: line number
+ */
+
+void _div(stack_t **s, unsigned int n)
+{
+	int outcome = 0;
+
+	if (*s == NULL || (*s)->next == NULL)
+		empty_stack_error("div", n);
+
+	if ((*s)->n == 0)
+		empty_stack_error("zero", n);
+	else
+	{
+		outcome = (*s)->next->n / (*s)->n;
+		pop(s, n);
+		(*s)->n = outcome;
+	}
+}
+
+/**
+ * mul - multiplies the second top element of the stack with
+ * the top element of the stack
+ *
+ * @s: pointer to head pointer
+ * @n: line number
+ */
+
+void mul(stack_t **s, unsigned int n)
+{
+	int outcome = 0;
+
+	if (*s == NULL || (*s)->next == NULL)
+		empty_stack_error("mul", n);
+	outcome = (*s)->n * (*s)->next->n;
 	pop(s, n);
 	(*s)->n = outcome;
 }
