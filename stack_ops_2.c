@@ -57,25 +57,12 @@ void add(stack_t **s, unsigned int n)
 
 void sub(stack_t **s, unsigned int n)
 {
-	stack_t *looper;
-	int outcome = 0, max = 0, next_to_max = 0;
+	int outcome = 0;
 
 	if (*s == NULL || (*s)->next == NULL)
 		empty_stack_error("sub", n);
-	looper = *s;
-	max = looper->n;
-	while (looper != NULL)
-	{
-		if (looper->n > max)
-		{
-			next_to_max = max;
-			max = looper->n;
-		}
-		if (looper->n < max && looper->n > next_to_max)
-			next_to_max = looper->n;
-		looper = looper->next;
-	}
-	outcome = max - next_to_max;
+
+	outcome = (*s)->next->n - (*s)->n;
 	pop(s, n);
 	(*s)->n = outcome;
 }
