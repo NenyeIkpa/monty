@@ -68,6 +68,7 @@ void pall(stack_t **s, unsigned int n)
 		printf("%d\n", looper->n);
 		looper = looper->next;
 	}
+	looper = *s;
 }
 
 /**
@@ -82,10 +83,33 @@ void pint (stack_t **s, unsigned int n)
 	(void)n;
 	if (*s == NULL)
 	{
-		empty_stack_error(n);
+		empty_stack_error("pint", n);
 		exit(EXIT_FAILURE);
 	}
 	printf("%d\n", (*s)->n);
 }
+
+/**
+ * pop - removes the value at the top of the stack
+ *
+ * @s: pointer to top of the stack pointer
+ * @n: line number
+ */
+
+void pop(stack_t **s, unsigned int n)
+{
+	stack_t *temp;
+
+	if (*s == NULL)
+	{
+		empty_stack_error("pop", n);
+		exit(EXIT_FAILURE);
+	}
+	temp = *s;
+	*s = (*s)->next;
+	(*s)->prev = NULL;
+	free(temp);
+}
+
 
 

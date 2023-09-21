@@ -1,6 +1,7 @@
 #include "monty.h"
 
 #define SIZE 1024
+int is_a_number(char *arg);
 
 /**
  * run_command - processes and runs commands
@@ -8,50 +9,68 @@
  * @fp: pointer to file
  * @top: pointer to top of stack
  * @args: commands to be run
- * @line_count: line number of command in file
+ * @line_number: line number of command
  */
 
-void run_command(FILE **fp, stack_t **top, char *args[2], int line_count)
+void run_command(FILE **fp, stack_t **top, char *args[2], int line_number)
 {
-	char *opcode;
-	int i, found, element;
+	char *opcode = args[0];
+	int i, found = 0, element;
 	instruction_t operations[] = {
-		{"push", push},
-		{"pall", pall},
-		{"pint", pint},
-		{NULL, NULL}
+		{"push", push}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {NULL, NULL}
 	};
 
-	opcode = args[0];
-	found = 0;
 	for (i = 0; operations[i].opcode; i++)
 	{
+
 		if (strcmp(opcode, operations[i].opcode) == 0)
 		{
 			found = 1;
-			if (strcmp(opcode, "pall") == 0 || strcmp(opcode, "pint") == 0)
-				element = line_count;
-			else
+			if (strcmp(opcode, operations[0].opcode) == 0)
 			{
-				if (args[1] == NULL)
+				if (args[1] == NULL || !is_a_number(args[1]))
 				{
-					no_arg_to_cmd_error(line_count);
+					no_arg_to_cmd_error(line_number);
 					fclose(*fp);
 					free_stack(top);
 					exit(EXIT_FAILURE);
 				}
-				element = atoi(args[1]);
+				  element = atoi(args[1]);
 			}
-			operations[i].f(top, element);
+			else
+				element = line_number;
+		operations[i].f(top, element);
 		}
 	}
 	if (!found)
 	{
-		cmd_does_not_exist_error(line_count, opcode);
+		cmd_does_not_exist_error(line_number, opcode);
 		free_stack(top);
 		fclose(*fp);
 		exit(EXIT_FAILURE);
 	}
+}
+
+/**
+ * is_a_number - checks if arg passed is an int
+ *
+ * @arg: arg passed
+ *
+ * Return: 1 when true else 0
+ */
+
+int is_a_number(char *arg)
+{
+	int i;
+
+	for (i = 0; arg[i]; i++)
+	{
+		if (arg[i] >= '0' && arg[i] <= '9')
+			continue;
+		else
+			return (0);
+	}
+	return (1);
 }
 
 /**
@@ -114,10 +133,10 @@ char *remove_white_spaces(char *str)
 int main(int argc, char **argv)
 {
 	FILE *file_ptr;
-	char *args[2];
+	char *args[2] = {NULL, NULL};
 	char *filename = NULL, buffer[SIZE], *command = NULL;
-	int line_number = 0;
 	stack_t *top = NULL;
+	int line_number = 0;
 
 	if (argc < 2)
 	{
@@ -134,13 +153,14 @@ int main(int argc, char **argv)
 	}
 	while (fgets(buffer, SIZE, file_ptr) != NULL)
 	{
-		/* fputs(buffer, stdout); */
 		command = remove_white_spaces(buffer);
-		line_number++;
-		/* fputs(command, stdout); */
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
-		run_command(&file_ptr, &top, args, line_number);
+		line_number++;
+		if (args[0] == NULL)
+			continue;
+		else
+			run_command(&file_ptr, &top, args, line_number);
 	}
 
 	fclose(file_ptr);
