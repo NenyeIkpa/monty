@@ -1,7 +1,53 @@
 #include "monty.h"
 
 #define SIZE 1024
-int is_a_number(char *arg);
+
+/**
+ * main - entry point to interpreter for monty bytecode files
+ *
+ * @argc: total number of arguments passed to main
+ * @argv: list of arguments passed to main
+ *
+ * Return: int
+ */
+
+int main(int argc, char **argv)
+{
+	FILE *file_ptr;
+	char *args[2] = {NULL, NULL};
+	char *filename = NULL, buffer[SIZE], *command = NULL;
+	stack_t *top = NULL;
+	int line_number = 0;
+
+	if (argc < 2)
+	{
+		p_serror("USAGE: monty file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	filename = argv[1];
+	file_ptr = fopen(filename, "r");
+	if (file_ptr == NULL)
+	{
+		file_open_error(filename);
+		exit(EXIT_FAILURE);
+	}
+	while (fgets(buffer, SIZE, file_ptr) != NULL)
+	{
+		command = remove_white_spaces(buffer);
+		command[strlen(command) - 1] = '\0';
+		split_command(args, command);
+		line_number++;
+		if (args[0] == NULL)
+			continue;
+		else
+			run_command(&file_ptr, &top, args, line_number);
+	}
+
+	fclose(file_ptr);
+	free_stack(&top);
+	return (0);
+}
 
 /**
  * run_command - processes and runs commands
@@ -17,7 +63,8 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_number)
 	char *opcode = args[0];
 	int i, found = 0, element;
 	instruction_t operations[] = {
-		{"push", push}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {NULL, NULL}
+		{"push", push}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {"swap", swap},
+		{NULL, NULL}
 	};
 
 	for (i = 0; operations[i].opcode; i++)
@@ -119,51 +166,4 @@ char *remove_white_spaces(char *str)
 	}
 	str[j] = '\0';
 	return (str);
-}
-
-/**
- * main - entry point to interpreter for monty bytecode files
- *
- * @argc: total number of arguments passed to main
- * @argv: list of arguments passed to main
- *
- * Return: int
- */
-
-int main(int argc, char **argv)
-{
-	FILE *file_ptr;
-	char *args[2] = {NULL, NULL};
-	char *filename = NULL, buffer[SIZE], *command = NULL;
-	stack_t *top = NULL;
-	int line_number = 0;
-
-	if (argc < 2)
-	{
-		p_serror("USAGE: monty file\n");
-		exit(EXIT_FAILURE);
-	}
-
-	filename = argv[1];
-	file_ptr = fopen(filename, "r");
-	if (file_ptr == NULL)
-	{
-		file_open_error(filename);
-		exit(EXIT_FAILURE);
-	}
-	while (fgets(buffer, SIZE, file_ptr) != NULL)
-	{
-		command = remove_white_spaces(buffer);
-		command[strlen(command) - 1] = '\0';
-		split_command(args, command);
-		line_number++;
-		if (args[0] == NULL)
-			continue;
-		else
-			run_command(&file_ptr, &top, args, line_number);
-	}
-
-	fclose(file_ptr);
-	free_stack(&top);
-	return (0);
 }

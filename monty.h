@@ -41,11 +41,17 @@ void push(stack_t **stack, unsigned int line_number);
 void pall(stack_t **stack, unsigned int line_number);
 void pint(stack_t **stack, unsigned int line_number);
 void pop(stack_t **stack, unsigned int n);
+void swap(stack_t **s, unsigned int n);
+void run_command(FILE **fp, stack_t **top, char *args[2], int line_number);
+int is_a_number(char *arg);
+void split_command(char *args[2], char *command);
+char *remove_white_spaces(char *str);
 void p_cerror(char);
 void p_serror(char *);
 void file_open_error(char *);
 void no_arg_to_cmd_error(int);
 void cmd_does_not_exist_error(int, char *);
 void empty_stack_error(char *op_type, int line_number);
+void malloc_error(void);
 
 #endif
