@@ -14,6 +14,8 @@ void mod(stack_t **s, unsigned int n)
 
 	if (*s == NULL || (*s)->next == NULL)
 		empty_stack_error("mod", n);
+	if ((*s)->n == 0)
+		empty_stack_error("zero", n);
 	outcome = (*s)->next->n % (*s)->n;
 	pop(s, n);
 	(*s)->n = outcome;

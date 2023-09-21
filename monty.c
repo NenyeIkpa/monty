@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 		command[strlen(command) - 1] = '\0';
 		split_command(args, command);
 		line_number++;
-		if (args[0] == NULL || strcmp(args[0], "nop") == 0)
+		if (args[0] == NULL || strcmp(args[0], "nop") == 0 || args[0][0] == '#')
 			continue;
 		else
 			run_command(&file_ptr, &top, args, line_number);
