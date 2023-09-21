@@ -32,7 +32,7 @@ void pchar(stack_t **s, unsigned int n)
 {
 	if (*s == NULL)
 		empty_stack_error("pchar", n);
-	if ((*s)->n < 0 && (*s)->n > 127)
+	if ((*s)->n < 0 || (*s)->n > 127)
 		empty_stack_error("out of range", n);
 	printf("%c\n", (char)(*s)->n);
 }
@@ -54,7 +54,7 @@ void pstr(stack_t **s, unsigned int n)
 	looper = *s;
 	while (looper != NULL)
 	{
-		if (looper->n <= 0 && looper->n > 127)
+		if (looper->n <= 0 || looper->n > 127)
 			break;
 		putchar((char)looper->n);
 		looper = looper->next;
