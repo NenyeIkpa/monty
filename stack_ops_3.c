@@ -61,3 +61,47 @@ void pstr(stack_t **s, unsigned int n)
 	}
 	putchar('\n');
 }
+
+/**
+ * rotl - rotates the stack to the top
+ *
+ * @s: pointer to top of stack pointer
+ * @n: line number
+ */
+
+void rotl(stack_t **s, unsigned int n)
+{
+	stack_t *looper, *temp;
+
+	(void)n;
+	temp = *s;
+	looper = *s;
+	while (looper->next != NULL)
+		looper = looper->next;
+	*s = (*s)->next;
+	looper->next = temp;
+	temp->prev = looper;
+	temp->next = NULL;
+}
+
+/**
+ * rotr - rotates the stack to the bottom
+ *
+ * @s: pointer to top of stack pointer
+ * @n: line number
+ */
+
+void rotr(stack_t **s, unsigned int n)
+{
+	stack_t *looper;
+
+	(void)n;
+	looper = *s;
+	while (looper->next != NULL)
+		looper = looper->next;
+	looper->next = *s;
+	(*s)->prev = looper;
+	looper->prev->next = NULL;
+	looper->prev = NULL;
+	*s = looper;
+}
