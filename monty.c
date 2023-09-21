@@ -67,18 +67,10 @@ void split_command(char *args[2], char *command)
 
 	token = strtok(command, " ");
 	args[0] = token;
-<<<<<<< Updated upstream
 	space_count++;
 	while (token != NULL)
 	{
 		if (space_count == 2)
-=======
-	token_count = 1;
-
-	while (token != NULL)
-	{
-		if (token_count == 2)
->>>>>>> Stashed changes
 			break;
 		token = strtok(NULL, " ");
 		args[1] = token;
