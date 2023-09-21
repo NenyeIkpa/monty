@@ -64,7 +64,7 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_number)
 	int i, found = 0, element;
 	instruction_t operations[] = {
 		{"push", push}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {"swap", swap},
-		{NULL, NULL}
+		{"add", add}, {NULL, NULL}
 	};
 
 	for (i = 0; operations[i].opcode; i++)

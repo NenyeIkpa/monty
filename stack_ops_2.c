@@ -35,3 +35,25 @@ void swap(stack_t **s, unsigned int n)
 	*s = temp->prev;
 	free(temp);
 }
+
+/**
+ * add - adds the top two eleents in stack
+ *
+ * @s: pointer to head pointer
+ * @n: line number
+ */
+
+void add(stack_t **s, unsigned int n)
+{
+	int outcome = 0;
+
+	if (*s == NULL || (*s)->next == NULL)
+	{
+		empty_stack_error("add", n);
+		exit(EXIT_FAILURE);
+	}
+	outcome = (*s)->n + (*s)->next->n;
+	pop(s, n);
+	(*s)->n = outcome;
+}
+
