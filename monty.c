@@ -108,16 +108,10 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_number)
 
 int is_a_number(char *arg)
 {
-	int i;
-
-	for (i = 0; arg[i]; i++)
-	{
-		if (arg[i] >= '0' && arg[i] <= '9')
-			continue;
-		else
-			return (0);
-	}
-	return (1);
+	if (atoi(arg) == 0 && strcmp(arg, "0") != 0)
+		return (0);
+	else
+		return (1);
 }
 
 /**
