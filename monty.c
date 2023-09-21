@@ -65,6 +65,7 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_number)
 	instruction_t operations[] = {
 		{"push", push}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {"swap", swap},
 		{"add", add}, {"sub", sub}, {"div", _div}, {"mul", mul}, {"mod", mod},
+		{"pchar", pchar}, {"pstr", pstr}, {"rotl", rotl}, {"rotr", rotr},
 		{NULL, NULL}
 	};
 
