@@ -42,6 +42,7 @@ void pall(stack_t **stack, unsigned int line_number);
 void pint(stack_t **stack, unsigned int line_number);
 void pop(stack_t **stack, unsigned int n);
 void swap(stack_t **s, unsigned int n);
+void add(stack_t **s, unsigned int n);
 void run_command(FILE **fp, stack_t **top, char *args[2], int line_number);
 int is_a_number(char *arg);
 void split_command(char *args[2], char *command);

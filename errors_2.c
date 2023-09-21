@@ -18,6 +18,8 @@ void empty_stack_error(char *op_type, int line_number)
 		msg = "can't pop an empty stack";
 	else if (strcmp(op_type, "swap") == 0)
 		msg = "can't swap, stack too short";
+	else if (strcmp(op_type, "add") == 0)
+		msg = "can'can't add, stack too short";
 	p_cerror('L');
 	p_cerror('0' + line_number);
 	p_serror(": ");
