@@ -56,14 +56,13 @@ void no_arg_to_cmd_error(int line_count)
  * cmd_does_not_exist_error - prints error when command is not found
  *
  * @line_count: line number of command in file
- * @opcode: name of operation to be performed on stack
  */
 
-void cmd_does_not_exist_error(int line_count, char *opcode)
+void cmd_does_not_exist_error(int line_count)
 {
 	p_serror("L");
 	p_cerror('0' + line_count);
 	p_serror(": unknown instruction ");
-	p_serror(opcode);
+	p_serror(args[0]);
 	p_serror("\n");
 }

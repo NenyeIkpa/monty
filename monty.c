@@ -14,17 +14,15 @@
 int main(int argc, char **argv)
 {
 	FILE *file_ptr;
-	char *args[2] = {NULL, NULL};
 	char *filename = NULL, buffer[SIZE], *command = NULL;
 	stack_t *top = NULL;
-	int line_number = 0;
+	int line_number = 0, is_queue = 0;
 
-	if (argc < 2)
+	if (argc < 2 || argc > 2)
 	{
 		p_serror("USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
-
 	filename = argv[1];
 	file_ptr = fopen(filename, "r");
 	if (file_ptr == NULL)
@@ -36,14 +34,22 @@ int main(int argc, char **argv)
 	{
 		command = remove_white_spaces(buffer);
 		command[strlen(command) - 1] = '\0';
-		split_command(args, command);
+		split_command(command);
 		line_number++;
 		if (args[0] == NULL || strcmp(args[0], "nop") == 0 || args[0][0] == '#')
 			continue;
-		else
-			run_command(&file_ptr, &top, args, line_number);
+		else if (strcmp(args[0], "queue") == 0)
+		{
+			is_queue = 1;
+			continue;
+		}
+		else if (strcmp(args[0], "stack") == 0)
+		{
+			is_queue = 0;
+			continue;
+		}
+		run_command(&file_ptr, &top, line_number, is_queue);
 	}
-
 	fclose(file_ptr);
 	free_stack(&top);
 	return (0);
@@ -54,28 +60,24 @@ int main(int argc, char **argv)
  *
  * @fp: pointer to file
  * @top: pointer to top of stack
- * @args: commands to be run
  * @line_number: line number of command
+ * @is_queue: checks if program is running in stack or queue mode
  */
 
-void run_command(FILE **fp, stack_t **top, char *args[2], int line_number)
+void run_command(FILE **fp, stack_t **top, int line_number, int is_queue)
 {
-	char *opcode = args[0];
-	int i, found = 0, element;
-	instruction_t operations[] = {
-		{"push", push}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {"swap", swap},
-		{"add", add}, {"sub", sub}, {"div", _div}, {"mul", mul}, {"mod", mod},
-		{"pchar", pchar}, {"pstr", pstr}, {"rotl", rotl}, {"rotr", rotr},
-		{NULL, NULL}
-	};
+	int i, found = 0;
+	instruction_t operations[] = {{"push", push}, {"pall", pall}, {"pint", pint},
+		{"pop", pop}, {"swap", swap}, {"add", add}, {"sub", sub}, {"div", _div},
+		{"mul", mul}, {"mod", mod}, {"pchar", pchar}, {"pstr", pstr}, {"rotl", rotl},
+		{"rotr", rotr}, {"push", q_push}, {NULL, NULL}};
 
 	for (i = 0; operations[i].opcode; i++)
 	{
-
-		if (strcmp(opcode, operations[i].opcode) == 0)
+		if (strcmp(args[0], operations[i].opcode) == 0)
 		{
 			found = 1;
-			if (strcmp(opcode, operations[0].opcode) == 0)
+			if (strcmp(args[0], "push") == 0)
 			{
 				if (args[1] == NULL || !is_a_number(args[1]))
 				{
@@ -84,16 +86,18 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_number)
 					free_stack(top);
 					exit(EXIT_FAILURE);
 				}
-				  element = atoi(args[1]);
+				if (is_queue)
+					operations[14].f(top, line_number);
+				else
+					operations[0].f(top, line_number);
+				break;
 			}
-			else
-				element = line_number;
-		operations[i].f(top, element);
+			operations[i].f(top, line_number);
 		}
 	}
 	if (!found)
 	{
-		cmd_does_not_exist_error(line_number, opcode);
+		cmd_does_not_exist_error(line_number);
 		free_stack(top);
 		fclose(*fp);
 		exit(EXIT_FAILURE);
@@ -110,7 +114,14 @@ void run_command(FILE **fp, stack_t **top, char *args[2], int line_number)
 
 int is_a_number(char *arg)
 {
-	if (atoi(arg) == 0 && strcmp(arg, "0") != 0)
+	int i;
+
+	for (i = 0; arg[i]; i++)
+	{
+		if ((arg[i] < '0' || arg[i] > '9') && arg[i] != '-')
+			return (0);
+	}
+	if (atoi(arg) == 0 && strcmp(arg, "0") != 0 && strcmp(arg, "-0"))
 		return (0);
 	else
 		return (1);
@@ -120,10 +131,9 @@ int is_a_number(char *arg)
  * split_command - splits given command into strings
  *
  * @command: given command
- * @args: pointer to array of strings;
  */
 
-void split_command(char *args[2], char *command)
+void split_command(char *command)
 {
 	char *token = NULL;
 	int space_count = 0;

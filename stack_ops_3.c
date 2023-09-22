@@ -50,7 +50,10 @@ void pstr(stack_t **s, unsigned int n)
 
 	(void)n;
 	if (*s == NULL)
+	{
 		putchar('\n');
+		return;
+	}
 	looper = *s;
 	while (looper != NULL)
 	{
@@ -74,6 +77,8 @@ void rotl(stack_t **s, unsigned int n)
 	stack_t *looper, *temp;
 
 	(void)n;
+	if (*s == NULL || (*s)->next == NULL)
+		return;
 	temp = *s;
 	looper = *s;
 	while (looper->next != NULL)
@@ -96,6 +101,8 @@ void rotr(stack_t **s, unsigned int n)
 	stack_t *looper;
 
 	(void)n;
+	if (*s == NULL || (*s)->next == NULL)
+		return;
 	looper = *s;
 	while (looper->next != NULL)
 		looper = looper->next;
