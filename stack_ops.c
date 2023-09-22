@@ -22,20 +22,18 @@ void free_stack(stack_t **s)
  * push - pushes an element onto the stack
  *
  * @s: pointer to stack head
- * @n: element to add to stack
+ * @n: line number
  */
 
 void push(stack_t **s, unsigned int n)
 {
 	stack_t *node;
 
+	(void)n;
 	node = malloc(sizeof(stack_t));
 	if (node == NULL)
-	{
-		printf("Error: malloc failed\n");
-		exit(EXIT_FAILURE);
-	}
-	node->n = (int)n;
+		malloc_error();
+	node->n = atoi(args[1]);
 	node->prev = NULL;
 	node->next = NULL;
 	if (*s == NULL)

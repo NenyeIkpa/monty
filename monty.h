@@ -6,6 +6,8 @@
 #include <string.h>
 #include <unistd.h>
 
+char *args[2];
+
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
  * @n: integer
@@ -51,9 +53,10 @@ void pchar(stack_t **s, unsigned int n);
 void pstr(stack_t **s, unsigned int n);
 void rotl(stack_t **s, unsigned int n);
 void rotr(stack_t **s, unsigned int n);
-void run_command(FILE **fp, stack_t **top, char *args[2], int line_number);
+void q_push(stack_t **s, unsigned int n);
+void run_command(FILE **fp, stack_t **top, int line_number, int is_queue);
 int is_a_number(char *arg);
-void split_command(char *args[2], char *command);
+void split_command(char *command);
 char *remove_white_spaces(char *str);
 void p_cerror(char);
 void p_serror(char *);
