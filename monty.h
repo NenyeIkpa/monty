@@ -62,7 +62,7 @@ void p_cerror(char);
 void p_serror(char *);
 void file_open_error(char *);
 void no_arg_to_cmd_error(int);
-void cmd_does_not_exist_error(int, char *);
+void cmd_does_not_exist_error(int);
 void empty_stack_error(char *op_type, int line_number);
 void malloc_error(void);
 
