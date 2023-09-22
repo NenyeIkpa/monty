@@ -10,4 +10,5 @@ Implement the nop opcode:- doesn't do anything
 Implement the sub opcode:- substracts the top element of the stack from the second element of the stack
 Implement the div code:- divides the second top element of the stack by the top element of the stack
 Implement the mul opcode:- multiplies the second top element of the stack with the top element of the stack
-Implement the mod opcode:- computes the rest of the division of the second top element of the stack by the top element of the stack.
+Implement the mod opcode:- computes the rest of the division of the second top element of the stack by the top element of the stack
+Implement the pchar opcode
